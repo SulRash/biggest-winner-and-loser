@@ -4,8 +4,10 @@ const losingStock = document.getElementById("losingStock");
 function displayStocks() {
   const symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "FB"];
 
+  const corsProxy = "https://cors-anywhere.herokuapp.com/";
+
   const promises = symbols.map((symbol) =>
-    fetch(`https://finance.yahoo.com/quote/${symbol}`)
+    fetch(`${corsProxy}https://finance.yahoo.com/quote/${symbol}`)
       .then((response) => response.text())
       .then((html) => {
         const parser = new DOMParser();
