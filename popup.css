@@ -1,0 +1,19 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 10px;
+    width: 300px;
+  }
+  
+  h1 {
+    margin-bottom: 10px;
+  }
+  
+  h2 {
+    margin-top: 20px;
+    margin-bottom: 5px;
+  }
+  
+  #loser {
+    margin-top: 20px;
+  }
+  
