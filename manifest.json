@@ -1,23 +1,20 @@
 {
     "manifest_version": 2,
-    "name": "Stock Market Winners and Losers",
+    "name": "Stock Market Gainers and Losers",
     "version": "1.0",
     "description": "Displays the biggest winner and loser in the stock market for the current trading day.",
-    "permissions": ["activeTab", "tabs", "webRequest"],
+    "permissions": ["activeTab", "webRequest"],
     "browser_action": {
-      "default_popup": "popup.html",
-      "default_icon": {
-        "48": "icons/icon48.png"
-      }
+      "default_icon": "icon.png",
+      "default_popup": "popup.html"
+    },
+    "background": {
+      "scripts": ["background.js"],
+      "persistent": false
     },
     "icons": {
-      "48": "icons/icon48.png"
+      "48": "icon.png"
     },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["content-script.js"]
-      }
-    ]
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
 }
   
