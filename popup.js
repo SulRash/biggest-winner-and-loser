@@ -4,30 +4,40 @@ const losingStock = document.getElementById("losingStock");
 function displayStocks() {
   const symbols = ["AAPL", "GOOGL", "MSFT", "AMZN", "FB"];
 
-  const corsProxy = "https://cors-anywhere.herokuapp.com/";
+  const code = `
+    new Promise((resolve) => {
+      const symbols = ${JSON.stringify(symbols)};
+      const results = [];
 
-  const promises = symbols.map((symbol) =>
-    fetch(`${corsProxy}https://finance.yahoo.com/quote/${symbol}`)
-      .then((response) => response.text())
-      .then((html) => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, "text/html");
+      symbols.forEach((symbol, index) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "https://finance.yahoo.com/quote/" + symbol);
+        xhr.onload = () => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(xhr.responseText, "text/html");
+          const priceChangeElement = doc.querySelector(
+            '[data-test="PREV_CLOSE-value"] + td'
+          );
+          const priceChangeText = priceChangeElement.textContent;
+          const change = parseFloat(
+            priceChangeText.slice(0, -1).replace(",", "")
+          );
 
-        const priceChangeElement = doc.querySelector(
-          '[data-test="PREV_CLOSE-value"] + td'
-        );
+          results.push({ symbol, change });
 
-        const priceChangeText = priceChangeElement.textContent;
-        const change = parseFloat(
-          priceChangeText.slice(0, -1).replace(",", "")
-        );
+          if (results.length === symbols.length) {
+            resolve(results);
+          }
+        };
+        xhr.send();
+      });
+    });
+  `;
 
-        return { symbol, change };
-      })
-  );
-
-  Promise.all(promises)
-    .then((priceChanges) => {
+  browser.tabs
+    .executeScript({ code })
+    .then((priceChangesArray) => {
+      const priceChanges = priceChangesArray[0];
       const winner = priceChanges.reduce((max, stock) =>
         max.change > stock.change ? max : stock
       );
